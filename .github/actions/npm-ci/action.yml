@@ -1,0 +1,14 @@
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version-file: ".nvmrc"
+    - id: node_modules
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}-${{ hashFiles('package-lock.json', '.github/actions/npm-ci/action.yml') }}
+    - if: steps.node_modules.outputs.cache-hit != 'true'
+      run: npm ci --include=dev
+      shell: bash
